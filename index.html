@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Teachable Machine Webcam</title>
+</head>
+<body>
+<h1>Deteksi Wajah</h1>
+<button type="button" onclick="init()">Mulai Kamera</button>
+<div><canvas id="canvas"></canvas></div>
+<div id="label-container"></div>
+<script
+src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teacha
+blemachine-image.min.js"></script>
+<script type="text/javascript">
+const URL = "PASTE-LINK-MODEL-DI-SINI/";
+let model, webcam, labelContainer, maxPredictions;
+  async function init() {
+const modelURL = URL + "model.json";
+const metadataURL = URL + "metadata.json";
+model = await tmImage.load(modelURL, metadataURL);
+maxPredictions = model.getTotalClasses();
+const flip = true;
+webcam = new tmImage.Webcam(200, 200, flip);
+await webcam.setup();
+await webcam.play();
+window.requestAnimationFrame(loop);
+document.getElementById("canvas").appendChild(webcam.canvas);
+labelContainer = document.getElementById("label-container");
+for (let i = 0; i < maxPredictions; i++) {
+labelContainer.appendChild(document.createElement("div"));
+}
+} a
+sync function loop() {
+webcam.update();
+await predict();
+window.requestAnimationFrame(loop);
+} a
+sync function predict() {
+const prediction = await model.predict(webcam.canvas);
+for (let i = 0; i < maxPredictions; i++) {
+const classPrediction = prediction[i].className + ": " +
+(prediction[i].probability * 100).toFixed(2) + "%";
+labelContainer.childNodes[i].innerHTML = classPrediction;
+}
+}
+</script>
+</body>
+</html>
+</html>
